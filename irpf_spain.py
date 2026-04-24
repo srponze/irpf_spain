@@ -65,14 +65,12 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
     if args.year:
         if args.month:
             fifo_activos = filtro_anno_mes(
-                lista[0:2],
-                FECHA_HORA_TRANSMISION,
+                fifo_activos,
                 args.year,
                 args.month,
             )
             fifo_divisas = filtro_anno_mes(
                 fifo_divisas,
-                FECHA_HORA_TRANSMISION,
                 args.year,
                 args.month,
             )
@@ -80,12 +78,10 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
         else:
             fifo_activos = filtro_anno(
                 fifo_activos,
-                FECHA_HORA_TRANSMISION,
                 args.year,
             )
             fifo_divisas = filtro_anno(
                 fifo_divisas,
-                FECHA_HORA_TRANSMISION,
                 args.year,
             )
 
@@ -151,22 +147,20 @@ args: argparse.Namespace = parser.parse_args()
 
 def filtro_anno(
     df: DataFrame,
-    nombre_columna_fecha_hora: str,
     anno: int,
 ) -> DataFrame:
-    return df[df[nombre_columna_fecha_hora].dt.year == anno] if df is not None else None
+    return df[df[FECHA_HORA_TRANSMISION].dt.year == anno] if df is not None else None
 
 
 def filtro_anno_mes(
     df: DataFrame,
-    nombre_columna_fecha_hora: str,
     anno: int,
     mes: int,
 ) -> DataFrame:
     return (
         df[
-            (df[nombre_columna_fecha_hora].dt.year == anno)
-            & (df[nombre_columna_fecha_hora].dt.month == mes)
+            (df[FECHA_HORA_TRANSMISION].dt.year == anno)
+            & (df[FECHA_HORA_TRANSMISION].dt.month == mes)
         ]
         if df is not None
         else None
@@ -184,7 +178,7 @@ def filtro_producto(
     df: DataFrame,
     producto: str,
 ) -> DataFrame:
-    return df[df[PRODUCTO] == producto] if df is not None else None
+    return df[df[PRODUCTO].str.contains(producto)] if df is not None else None
 
 
 main(args)
