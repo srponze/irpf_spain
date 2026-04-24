@@ -40,8 +40,6 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
     fifo_activos, posiciones_activos, mov_sin_compra_activos = fifo(activos, "activos")
     fifo_divisas, posiciones_divisas, mov_sin_compra_divisas = fifo(divisas, "divisas")
 
-    lista: list[DataFrame | None] = [fifo_activos, fifo_divisas]
-
     if args.divisa:
         fifo_activos = filtro_divisa(
             fifo_activos,
