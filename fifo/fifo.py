@@ -21,9 +21,9 @@ def fifo(
     _movimientos: DataFrame,
     modo: str = "activos",
 ) -> tuple[
-    DataFrame,
-    DataFrame,
-    DataFrame,
+    DataFrame | None,
+    DataFrame | None,
+    DataFrame | None,
 ]:
     movimientos = _movimientos.copy()
     lista_global_operaciones: list[dict[str, Any]] = []
@@ -71,7 +71,7 @@ def fifo(
             modo,
         )
         if lista_global_operaciones
-        else DataFrame()
+        else None
     )
 
     dataframe_posiciones_actuales: DataFrame = (
@@ -84,7 +84,7 @@ def fifo(
             .reset_index(drop=True),
         )
         if lista_posiciones_actuales
-        else DataFrame()
+        else None
     )
 
     dataframe_movimientos_sin_compra: DataFrame = (
@@ -96,7 +96,7 @@ def fifo(
             .reset_index(drop=True),
         )
         if lista_movimientos_sin_compra
-        else DataFrame()
+        else None
     )
 
     return (

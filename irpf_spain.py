@@ -1,17 +1,22 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING
 
-from constantes import DIVISA, FECHA_HORA_TRANSMISION, PRODUCTO
+from pandas import DataFrame
+
+from constantes import (
+    DIVISA,
+    FECHA_HORA_TRANSMISION,
+    GANANCIA_PERDIDA,
+    PRODUCTO,
+    TOTAL_ADQUISICION,
+    TOTAL_TRANSMISION,
+)
 from fifo.fifo import fifo
 from tablas.account import leer_account
 from tablas.activos import obtener_activos
 from tablas.divisas import obtener_divisas
 from tablas.transactions import leer_transactions
-
-if TYPE_CHECKING:
-    from pandas import DataFrame
 
 
 def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
@@ -35,53 +40,96 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
     fifo_activos, posiciones_activos, mov_sin_compra_activos = fifo(activos, "activos")
     fifo_divisas, posiciones_divisas, mov_sin_compra_divisas = fifo(divisas, "divisas")
 
-    if args.año:
-        if args.mes:
-            fifo_activos = fifo_activos[
-                (fifo_activos[FECHA_HORA_TRANSMISION].dt.year == args.año)
-                & (fifo_activos[FECHA_HORA_TRANSMISION].dt.month == args.mes)
-            ]
-            fifo_divisas = fifo_divisas[
-                (fifo_divisas[FECHA_HORA_TRANSMISION].dt.year == args.año)
-                & (fifo_divisas[FECHA_HORA_TRANSMISION].dt.month == args.mes)
-            ]
-        else:
-            fifo_activos = fifo_activos[
-                fifo_activos[FECHA_HORA_TRANSMISION].dt.year == args.año
-            ]
+    lista: list[DataFrame | None] = [fifo_activos, fifo_divisas]
 
     if args.divisa:
-        fifo_activos = fifo_activos[
-            fifo_activos[DIVISA].str.contains(args.divisa.upper())
-        ]
-        fifo_divisas = fifo_divisas[
-            fifo_divisas[DIVISA].str.contains(args.divisa.upper())
-        ]
+        fifo_activos = filtro_divisa(
+            fifo_activos,
+            args.divisa.upper(),
+        )
+        fifo_divisas = filtro_divisa(
+            fifo_divisas,
+            args.divisa.upper(),
+        )
 
-    if args.valor:
-        fifo_activos = fifo_activos[
-            fifo_activos[PRODUCTO].str.contains(args.valor.upper())
-        ]
-        fifo_divisas = fifo_divisas[
-            fifo_divisas[PRODUCTO].str.contains(args.valor.upper())
-        ]
+    if args.producto:
+        fifo_activos = filtro_producto(
+            fifo_activos,
+            args.producto.upper(),
+        )
+        fifo_divisas = filtro_producto(
+            fifo_divisas,
+            args.producto.upper(),
+        )
 
-    if args.tabla:
-        if args.tabla in "activos":
-            print(fifo_activos) if not fifo_activos.empty else print(
+    if args.year:
+        if args.month:
+            fifo_activos = filtro_anno_mes(
+                lista[0:2],
+                FECHA_HORA_TRANSMISION,
+                args.year,
+                args.month,
+            )
+            fifo_divisas = filtro_anno_mes(
+                fifo_divisas,
+                FECHA_HORA_TRANSMISION,
+                args.year,
+                args.month,
+            )
+
+        else:
+            fifo_activos = filtro_anno(
+                fifo_activos,
+                FECHA_HORA_TRANSMISION,
+                args.year,
+            )
+            fifo_divisas = filtro_anno(
+                fifo_divisas,
+                FECHA_HORA_TRANSMISION,
+                args.year,
+            )
+
+    if args.tabla in "activos":
+        if args.agrupado:
+            print(
+                fifo_activos.groupby(by=[PRODUCTO, DIVISA], as_index=False)[
+                    [
+                        TOTAL_ADQUISICION,
+                        TOTAL_TRANSMISION,
+                        GANANCIA_PERDIDA,
+                    ]
+                ].sum(),
+            ) if fifo_activos is not None else print("No hay operaciones de activos")
+        else:
+            print(fifo_activos) if fifo_activos is not None else print(
                 "No hay operaciones de activos",
             )
-            print(mov_sin_compra_activos) if not mov_sin_compra_activos.empty else None
-        elif args.tabla in "divisas":
-            print(fifo_divisas) if not fifo_divisas.empty else print(
+            print(
+                mov_sin_compra_activos,
+            ) if mov_sin_compra_activos is not None else None
+
+    elif args.tabla in "divisas":
+        if args.agrupado:
+            print(
+                fifo_divisas.groupby(by=[DIVISA], as_index=False)[
+                    [
+                        TOTAL_ADQUISICION,
+                        TOTAL_TRANSMISION,
+                        GANANCIA_PERDIDA,
+                    ]
+                ].sum(),
+            ) if fifo_divisas is not None else print("No hay operaciones de divisas")
+        else:
+            print(fifo_divisas) if fifo_divisas is not None else print(
                 "No hay operaciones de divisas",
             )
-            print(mov_sin_compra_divisas) if not mov_sin_compra_divisas.empty else None
-        elif args.tabla in "posiciones":
-            if not posiciones_activos.empty:
-                print(posiciones_activos)
-            if not posiciones_divisas.empty:
-                print(posiciones_divisas)
+            print(
+                mov_sin_compra_divisas,
+            ) if mov_sin_compra_divisas is not None else None
+
+    elif args.tabla in "posiciones":
+        print(posiciones_activos) if posiciones_activos is not None else None
+        print(posiciones_divisas) if posiciones_divisas is not None else None
 
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -91,12 +139,52 @@ parser.add_argument(
     "-t",
     "--tabla",
     help="puede ser 'a', 'act' o 'activos' 'd', 'div' o 'divisas' 'p', 'pos' o 'posiciones'",  # noqa: E501
-    default="a",
+    default="activos",
 )
-parser.add_argument("-a", "--año", type=int)
-parser.add_argument("-m", "--mes", type=int)
+parser.add_argument("-a", "--agrupado", action="store_true")
+parser.add_argument("-y", "--year", type=int)
+parser.add_argument("-m", "--month", type=int)
 parser.add_argument("-d", "--divisa")
-parser.add_argument("-v", "--valor")
+parser.add_argument("-p", "--producto")
 args: argparse.Namespace = parser.parse_args()
+
+
+def filtro_anno(
+    df: DataFrame,
+    nombre_columna_fecha_hora: str,
+    anno: int,
+) -> DataFrame:
+    return df[df[nombre_columna_fecha_hora].dt.year == anno] if df is not None else None
+
+
+def filtro_anno_mes(
+    df: DataFrame,
+    nombre_columna_fecha_hora: str,
+    anno: int,
+    mes: int,
+) -> DataFrame:
+    return (
+        df[
+            (df[nombre_columna_fecha_hora].dt.year == anno)
+            & (df[nombre_columna_fecha_hora].dt.month == mes)
+        ]
+        if df is not None
+        else None
+    )
+
+
+def filtro_divisa(
+    df: DataFrame,
+    divisa: str,
+) -> DataFrame:
+    return df[df[DIVISA] == divisa] if df is not None else None
+
+
+def filtro_producto(
+    df: DataFrame,
+    producto: str,
+) -> DataFrame:
+    return df[df[PRODUCTO] == producto] if df is not None else None
+
 
 main(args)

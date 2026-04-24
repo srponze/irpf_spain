@@ -1,7 +1,6 @@
 # Calculadora de Ganancias Patrimoniales en el Irpf Español
 
 Esta herramienta simplifica la declaración de la renta para inversores. Automatiza el cálculo de las ganancias y pérdidas patrimoniales derivadas de la compra y venta de acciones cotizadas y ETF.
-Esta aplicación generará los informes necesarios para introducir automáticamente todas las operaciones en RentaWeb (Pendiente).
 Tambien señala las operaciones que inclumplan la regla antiaplicación (regla de los dos meses) (Pendiente)
 
 
