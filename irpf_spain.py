@@ -21,13 +21,20 @@ from tablas.mov_divisas import obtener_mov_divisas
 from tablas.transactions import leer_transactions
 
 
-def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
+def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
 
     if args.all:
         pd.options.display.max_rows = 10000
 
-    account: DataFrame = leer_account(Path(args.Account))
-    transactions: DataFrame = leer_transactions(Path(args.Transactions))
+    if args.Account:
+        account: DataFrame = leer_account(Path(args.Account))
+    else:
+        account: DataFrame = leer_account("Account.csv")
+
+    if args.Transactions:
+        transactions: DataFrame = leer_transactions(Path(args.Transactions))
+    else:
+        transactions: DataFrame = leer_transactions("Transactions.csv")
 
     if account.empty or transactions.empty:
         print("Account o Transaction estan vacios")
