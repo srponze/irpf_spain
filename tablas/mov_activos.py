@@ -6,7 +6,7 @@ from constantes import COMISIONES, NUMERO, PRECIO, TIPO, TOTAL, VALOR_EUR, VALOR
 from tablas.funciones import decimal
 
 
-def obtener_activos(_transactions: DataFrame) -> DataFrame:
+def obtener_mov_activos(_transactions: DataFrame) -> DataFrame:
 
     transactions: DataFrame = _transactions.copy()
     transactions[NUMERO] = transactions[NUMERO].astype(int)

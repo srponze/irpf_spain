@@ -19,7 +19,7 @@ from constantes import (
 from tablas.funciones import decimal
 
 
-def obtener_divisas(
+def obtener_mov_divisas(
     _transactions: DataFrame,
     _account: DataFrame,
 ) -> DataFrame:
