@@ -92,7 +92,7 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
 
     if args.tabla in "activos":
         if args.agrupado:
-            fifo_activos = filtro_agrupado(fifo_activos, [PRODUCTO, DIVISA])
+            fifo_activos = filtro_agrupado(fifo_activos, [PRODUCTO])
             print(fifo_activos)
         else:
             print(fifo_activos)
