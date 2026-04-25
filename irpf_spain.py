@@ -14,8 +14,8 @@ from constantes import (
 )
 from fifo.fifo import fifo
 from tablas.account import leer_account
-from tablas.activos import obtener_activos
-from tablas.divisas import obtener_divisas
+from tablas.mov_activos import obtener_mov_activos
+from tablas.mov_divisas import obtener_mov_divisas
 from tablas.transactions import leer_transactions
 
 
@@ -35,10 +35,16 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
         print("Account o Transaction estan vacios")
         sys.exit()
 
-    activos: DataFrame = obtener_activos(transactions)
-    divisas: DataFrame = obtener_divisas(transactions, account)
-    fifo_activos, posiciones_activos, mov_sin_compra_activos = fifo(activos, "activos")
-    fifo_divisas, posiciones_divisas, mov_sin_compra_divisas = fifo(divisas, "divisas")
+    mov_activos: DataFrame = obtener_mov_activos(transactions)
+    mov_divisas: DataFrame = obtener_mov_divisas(transactions, account)
+    fifo_activos, posiciones_activos, mov_sin_compra_activos = fifo(
+        mov_activos,
+        "activos",
+    )
+    fifo_divisas, posiciones_divisas, mov_sin_compra_divisas = fifo(
+        mov_divisas,
+        "divisas",
+    )
 
     if args.divisa:
         fifo_activos = filtro_divisa(
