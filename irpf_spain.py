@@ -91,38 +91,20 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
 
     if args.tabla in "activos":
         if args.agrupado:
-            print(
-                fifo_activos.groupby(by=[PRODUCTO, DIVISA], as_index=False)[
-                    [
-                        TOTAL_ADQUISICION,
-                        TOTAL_TRANSMISION,
-                        GANANCIA_PERDIDA,
-                    ]
-                ].sum(),
-            ) if fifo_activos is not None else print("No hay operaciones de activos")
+            fifo_activos = filtro_agrupado(fifo_activos, [PRODUCTO, DIVISA])
+            print(fifo_activos)
         else:
-            print(fifo_activos) if fifo_activos is not None else print(
-                "No hay operaciones de activos",
-            )
+            print(fifo_activos)
             print(
                 mov_sin_compra_activos,
             ) if mov_sin_compra_activos is not None else None
 
     elif args.tabla in "divisas":
         if args.agrupado:
-            print(
-                fifo_divisas.groupby(by=[DIVISA], as_index=False)[
-                    [
-                        TOTAL_ADQUISICION,
-                        TOTAL_TRANSMISION,
-                        GANANCIA_PERDIDA,
-                    ]
-                ].sum(),
-            ) if fifo_divisas is not None else print("No hay operaciones de divisas")
+            fifo_divisas = filtro_agrupado(fifo_divisas, [DIVISA])
+            print(fifo_divisas)
         else:
-            print(fifo_divisas) if fifo_divisas is not None else print(
-                "No hay operaciones de divisas",
-            )
+            print(fifo_divisas)
             print(
                 mov_sin_compra_divisas,
             ) if mov_sin_compra_divisas is not None else None
@@ -204,6 +186,16 @@ def filtro_producto(
     producto: str,
 ) -> DataFrame:
     return df[df[PRODUCTO].str.contains(producto)] if df is not None else None
+
+
+def filtro_agrupado(df: DataFrame, agrupar_por: list[str]) -> DataFrame:
+    return df.groupby(by=agrupar_por, as_index=False)[
+        [
+            TOTAL_ADQUISICION,
+            TOTAL_TRANSMISION,
+            GANANCIA_PERDIDA,
+        ]
+    ].sum()
 
 
 main(args)
