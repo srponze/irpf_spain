@@ -127,19 +127,40 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
 
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-A", "--Account")
-parser.add_argument("-T", "--Transactions")
+parser.add_argument(
+    "-A",
+    "--Account",
+    help="Indica un archivo Account especifico",
+    default="./Account.csv",
+)
+parser.add_argument(
+    "-T",
+    "--Transactions",
+    help="Indica un archivo Transactions especifico",
+    default="./Transactions.csv",
+)
 parser.add_argument(
     "-t",
     "--tabla",
-    help="puede ser 'a', 'act' o 'activos' 'd', 'div' o 'divisas' 'p', 'pos' o 'posiciones'",  # noqa: E501
+    help="TABLA puede ser activos, divisas o posiciones",
     default="activos",
 )
-parser.add_argument("-a", "--agrupado", action="store_true")
-parser.add_argument("-y", "--year", type=int)
-parser.add_argument("-m", "--month", type=int)
-parser.add_argument("-d", "--divisa")
-parser.add_argument("-p", "--producto")
+parser.add_argument(
+    "-a",
+    "--agrupado",
+    help="Devuelve la tabla agrupada por productos y/o divisa",
+    action="store_true",
+)
+parser.add_argument("-y", "--year", type=int, help="Filtra por año los resultados")
+parser.add_argument("-m", "--month", type=int, help="Filtra por mes los resultados")
+parser.add_argument("-d", "--divisa", help="Filtra por divisa los resultados")
+parser.add_argument("-p", "--producto", help="Filtra por producto los resultados")
+parser.add_argument(
+    "-r",
+    "--renta-web",
+    help="Introduce los resultados en Renta-Web, seguir instrucciones para lograrlo",
+    action="store_true",
+)
 args: argparse.Namespace = parser.parse_args()
 
 
