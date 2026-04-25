@@ -68,13 +68,13 @@ class RentaWeb:
             page.get_by_role(
                 "textbox",
                 name="Valor de transmisión (*):",
-            ).press_sequentially(str(abs(row.total_ad)))
+            ).press_sequentially(str(abs(row.total_tr)))
             page.wait_for_timeout(self.tiempo_espera)
 
             page.get_by_role(
                 "textbox",
                 name="Valor de adquisición (*):",
-            ).press_sequentially(str(abs(row.total_tr)))
+            ).press_sequentially(str(abs(row.total_ad)))
             page.wait_for_timeout(self.tiempo_espera)
 
             anterior_producto = row[3]
