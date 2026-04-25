@@ -43,7 +43,7 @@ class RentaWeb:
             page.get_by_text("Ganancias y pérdidas").click()
         page.get_by_text("Acciones cotizadas").click()
 
-        anterior_producto = ""
+        anterior_producto: str = ""
 
         for row in fifo_activos.itertuples():
             if row.producto != anterior_producto:

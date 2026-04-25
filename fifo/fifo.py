@@ -25,7 +25,7 @@ def fifo(
     DataFrame | None,
     DataFrame | None,
 ]:
-    movimientos = _movimientos.copy()
+    movimientos: DataFrame = _movimientos.copy()
     lista_global_operaciones: list[dict[str, Any]] = []
     lista_movimientos_sin_compra: list[dict[str, Any]] = []
     lista_posiciones_actuales: list[dict[str, Any]] = []

@@ -21,20 +21,13 @@ from tablas.mov_divisas import obtener_mov_divisas
 from tablas.transactions import leer_transactions
 
 
-def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
+def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
 
     if args.all:
         pd.options.display.max_rows = 10000
 
-    if args.Account:
-        account: DataFrame = leer_account(Path(args.Account))
-    else:
-        account: DataFrame = leer_account("Account.csv")
-
-    if args.Transactions:
-        transactions: DataFrame = leer_transactions(Path(args.Transactions))
-    else:
-        transactions: DataFrame = leer_transactions("Transactions.csv")
+    account: DataFrame = leer_account(Path(args.Account))
+    transactions: DataFrame = leer_transactions(Path(args.Transactions))
 
     if account.empty or transactions.empty:
         print("Account o Transaction estan vacios")
@@ -52,51 +45,51 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
     )
 
     if args.divisa:
-        fifo_activos = filtro_divisa(
+        fifo_activos: DataFrame = filtro_divisa(
             fifo_activos,
             args.divisa.upper(),
         )
-        fifo_divisas = filtro_divisa(
+        fifo_divisas: DataFrame = filtro_divisa(
             fifo_divisas,
             args.divisa.upper(),
         )
 
     if args.producto:
-        fifo_activos = filtro_producto(
+        fifo_activos: DataFrame = filtro_producto(
             fifo_activos,
             args.producto.upper(),
         )
-        fifo_divisas = filtro_producto(
+        fifo_divisas: DataFrame = filtro_producto(
             fifo_divisas,
             args.producto.upper(),
         )
 
     if args.year:
         if args.month:
-            fifo_activos = filtro_anno_mes(
+            fifo_activos: DataFrame = filtro_anno_mes(
                 fifo_activos,
                 args.year,
                 args.month,
             )
-            fifo_divisas = filtro_anno_mes(
+            fifo_divisas: DataFrame = filtro_anno_mes(
                 fifo_divisas,
                 args.year,
                 args.month,
             )
 
         else:
-            fifo_activos = filtro_anno(
+            fifo_activos: DataFrame = filtro_anno(
                 fifo_activos,
                 args.year,
             )
-            fifo_divisas = filtro_anno(
+            fifo_divisas: DataFrame = filtro_anno(
                 fifo_divisas,
                 args.year,
             )
 
     if args.tabla in "activos":
         if args.agrupado:
-            fifo_activos = filtro_agrupado(fifo_activos, [PRODUCTO])
+            fifo_activos: DataFrame = filtro_agrupado(fifo_activos, [PRODUCTO])
             print(fifo_activos)
         else:
             print(fifo_activos)
@@ -106,7 +99,7 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
 
     elif args.tabla in "divisas":
         if args.agrupado:
-            fifo_divisas = filtro_agrupado(fifo_divisas, [DIVISA])
+            fifo_divisas: DataFrame = filtro_agrupado(fifo_divisas, [DIVISA])
             print(fifo_divisas)
         else:
             print(fifo_divisas)

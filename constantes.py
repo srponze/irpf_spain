@@ -1,5 +1,5 @@
 # Orden que busco en la tabla
-ORDEN_ACCOUNT = [
+ORDEN_ACCOUNT: list[str] = [
     FECHA := "fecha",
     HORA := "hora",
     PRODUCTO := "producto",
@@ -13,7 +13,7 @@ ORDEN_ACCOUNT = [
 FECHA_HORA = "fecha_hora"
 
 
-ORDEN_TRANSACTIONS = [
+ORDEN_TRANSACTIONS: list[str] = [
     FECHA,
     HORA,
     PRODUCTO,
@@ -29,7 +29,7 @@ ORDEN_TRANSACTIONS = [
     TOTAL := "total",
 ]
 
-ORDEN_OPERACIONES = [
+ORDEN_OPERACIONES: list[str] = [
     FECHA_HORA_ADQUISICION := "fecha_hora_ad",
     FECHA_HORA_TRANSMISION := "fecha_hora_tr",
     PRODUCTO,
@@ -55,7 +55,7 @@ ORDEN_OPERACIONES = [
 
 
 # Orden que tienen los CSV
-ORDEN_ACCOUNT_CSV = [
+ORDEN_ACCOUNT_CSV: list[str] = [
     FECHA,
     HORA,
     PRODUCTO,
@@ -65,10 +65,10 @@ ORDEN_ACCOUNT_CSV = [
     DIVISA,
     SALDO,
 ]
-USECOLS_ACCOUNT_CSV = [0, 1, 3, 5, 6, 8, 9, 10]
+USECOLS_ACCOUNT_CSV: list[int] = [0, 1, 3, 5, 6, 8, 9, 10]
 
 
-ORDEN_TRANSACTIONS_CSV = [
+ORDEN_TRANSACTIONS_CSV: list[str] = [
     FECHA,
     HORA,
     PRODUCTO,
@@ -83,4 +83,4 @@ ORDEN_TRANSACTIONS_CSV = [
     COMISIONES,
     TOTAL,
 ]
-USECOLS_TRANSACTIONS_CSV = [0, 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 14, 15]
+USECOLS_TRANSACTIONS_CSV: list[int] = [0, 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 14, 15]
