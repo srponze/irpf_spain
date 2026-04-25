@@ -13,13 +13,14 @@ from constantes import (
     TOTAL_TRANSMISION,
 )
 from fifo.fifo import fifo
+from renta_web import RentaWeb
 from tablas.account import leer_account
 from tablas.mov_activos import obtener_mov_activos
 from tablas.mov_divisas import obtener_mov_divisas
 from tablas.transactions import leer_transactions
 
 
-def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
+def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
 
     if args.Account:
         account: DataFrame = leer_account(Path(args.Account))
@@ -113,6 +114,15 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912
         print(posiciones_activos) if posiciones_activos is not None else None
         print(posiciones_divisas) if posiciones_divisas is not None else None
 
+    if args.rentaweb:
+        rentaweb = RentaWeb()
+        rentaweb.iniciar()
+        rentaweb.login()
+        if args.tabla in "activos":
+            rentaweb.introducir_activos(fifo_activos.sort_values(by="producto"))
+        elif args.tabla in "divisas":
+            pass
+
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument(
@@ -145,8 +155,8 @@ parser.add_argument("-d", "--divisa", help="Filtra por divisa los resultados")
 parser.add_argument("-p", "--producto", help="Filtra por producto los resultados")
 parser.add_argument(
     "-r",
-    "--renta-web",
-    help="Introduce los resultados en Renta-Web, seguir instrucciones para lograrlo",
+    "--rentaweb",
+    help="Introduce los resultados que hayas especificado en TABLA",
     action="store_true",
 )
 args: argparse.Namespace = parser.parse_args()
