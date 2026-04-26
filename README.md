@@ -11,7 +11,7 @@ Esta herramienta simplifica la declaración de la renta para inversores. Automat
 ## Características principales
 - La aplicación procesa tus informes y determina las ganancias o pérdidas patrimoniales.
 - Sigue el metodo FIFO para cumplir con la normativa de la Agencia Tributaria Española.
-- Soporta divisas extranjeras, e incluye la propia tributación de la tenencia de divisa extranjera sin AutoFX, puedes leer más sobre esto aquí
+- Soporta divisas extranjeras, e incluye la propia tributación de la tenencia de divisa extranjera (USD) sin AutoFX, puedes leer más sobre esto aquí
    - https://www.filios.app/blog/como-meter-las-operaciones-con-divisas-en-el-irpf/
 
 
@@ -27,7 +27,7 @@ git clone https://github.com/srponze/irpf_spain.git
 
    Ej: Si en 2025 has vendido varias acciones compradas en 2024, aumenta el rango inicial como mínimo hasta el momento de dicha compra, no te preocupes por el resto de acciones que no se hayan vendido en 2025 que incluyas, no se tendrán en cuenta
 
-2. Mueve los archivos Account.csv y Transactions.csv a la raiz del proyecto, tambien si quieres aplicar los tipos de cambio a final del dia del BCE mueve el xml a la    raiz del proyecto y renombralo como tipos_bce.xml
+2. Mueve los archivos Account.csv y Transactions.csv a la raiz del proyecto, tambien si quieres aplicar los tipos de cambio a final del dia del BCE mueve el xml a la raiz del proyecto y renombralo como tipos_bce.xml, actualmente solo una divisa extranjera, el dolar (USD) (Pendiente de varias a la vez y cualquier divisa)
 
 3. Ejecuta el script irpf_spain.py:
 ```bash
