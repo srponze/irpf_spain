@@ -111,7 +111,9 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
             ) if mov_sin_compra_divisas is not None else None
 
     elif args.tabla in "posiciones":
+        print("Posiciones activos:") if posiciones_activos is not None else None
         print(posiciones_activos) if posiciones_activos is not None else None
+        print("Posiciones divisas:") if posiciones_divisas is not None else None
         print(posiciones_divisas) if posiciones_divisas is not None else None
 
     if args.rentaweb:
