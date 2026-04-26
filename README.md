@@ -19,7 +19,7 @@ Tambien señala las operaciones que inclumplan la regla antiaplicación (regla d
 ## Instalación
 1. Clona este repositorio o descarga el archivo Zip y descomprímelo:
    ```bash
-   git clone https://github.com/srponze/irpfSpain.git
+   git clone https://github.com/srponze/irpf_spain.git
    ```
 
 
@@ -31,13 +31,14 @@ Tambien señala las operaciones que inclumplan la regla antiaplicación (regla d
 
 2. Mueve los archivos Account.csv y Transactions.csv a la raiz del proyecto, tambien si quieres aplicar los tipos de cambio a final del dia del BCE mueve el xml al la    raiz del proyecto y renombralo como tipos_bce.xml
 
-3. Ejecuta el script cliente.py:
+3. Ejecuta el script irpf_spain.py:
    ```bash
    python irpf_spain.py
    ```
 
 
 ## Opciones
+```
 usage: irpf_spain.py [-h] [-A ACCOUNT] [-T TRANSACTIONS] [-t TABLA] [-a] [-y YEAR] [-m MONTH] [-d DIVISA] [-p PRODUCTO] [-r] [--all] [--bce]
 
 options:
@@ -57,6 +58,7 @@ options:
   --all                 Muestra todas las filas de la tabla (default: False)
   --bce                 Aplica los tipos de cambio a final del dia del BCE a las transacciones en USD (asegurate de descargar el archivo xml y renombrar a 'tipos_bce.xml' en la raiz
                         del proyecto de aqui https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/usd.xml) (default: False)
+```
 
 
 ## Licencia
