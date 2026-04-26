@@ -18,7 +18,7 @@ from renta_web import RentaWeb
 from tablas.account import leer_account
 from tablas.mov_activos import obtener_mov_activos
 from tablas.mov_divisas import obtener_mov_divisas
-from tablas.transactions import leer_transactions
+from tablas.transactions import leer_transactions, leer_transactions_bce
 
 
 def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
@@ -26,15 +26,11 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
     if args.all:
         pd.options.display.max_rows = 10000
 
-    if args.Account:
-        account: DataFrame = leer_account(Path(args.Account))
+    account: DataFrame = leer_account(Path(args.Account))
+    if args.bce:
+        transactions: DataFrame = leer_transactions_bce(Path(args.Transactions))
     else:
-        account: DataFrame = leer_account("Account.csv")
-
-    if args.Transactions:
         transactions: DataFrame = leer_transactions(Path(args.Transactions))
-    else:
-        transactions: DataFrame = leer_transactions("Transactions.csv")
 
     if account.empty or transactions.empty:
         print("Account o Transaction estan vacios")
@@ -212,6 +208,11 @@ parser.add_argument(
 parser.add_argument(
     "--all",
     help="Muestra todas las filas de la tabla",
+    action="store_true",
+)
+parser.add_argument(
+    "--bce",
+    help="Aplica los tipos de cambio a final del dia del BCE a las transacciones en USD (asegurate de descargar el archivo xml y renombrar a 'tipos_bce.xml' en la raiz del proyecto de aqui https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/usd.xml)",
     action="store_true",
 )
 args: argparse.Namespace = parser.parse_args()

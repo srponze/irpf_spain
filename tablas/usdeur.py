@@ -4,7 +4,7 @@ from pandas import DataFrame
 from constantes import FECHA, TIPO
 
 
-def obtener_tipos_usdeur(ruta: str = "usd.xml") -> DataFrame:
+def obtener_tipos_usdeur(ruta: str = "tipos_bce.xml") -> DataFrame:
     tipos_bce: DataFrame = pd.read_xml(
         ruta,
         xpath=".//*[local-name()='Obs']",

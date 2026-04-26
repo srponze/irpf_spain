@@ -40,10 +40,35 @@ def leer_transactions(ruta: Path) -> DataFrame:
         },
     )[ORDEN_TRANSACTIONS]
     transactions = transactions.dropna(subset=[HORA]).reset_index(drop=True)
+    transactions: DataFrame = fecha_hora(transactions)
+    return transactions
 
+
+def leer_transactions_bce(ruta: Path) -> DataFrame:
+    transactions = pd.read_csv(
+        ruta,
+        header=0,
+        names=ORDEN_TRANSACTIONS_CSV,
+        usecols=USECOLS_TRANSACTIONS_CSV,
+        converters={
+            FECHA: fecha,
+            NUMERO: punto_x_coma,
+            PRECIO: punto_x_coma,
+            VALOR_LOCAL: punto_x_coma,
+            VALOR_EUR: punto_x_coma,
+            TIPO: punto_x_coma,
+            COMISIONES: punto_x_coma,
+            TOTAL: punto_x_coma,
+        },
+    )[ORDEN_TRANSACTIONS]
+    transactions = transactions.dropna(subset=[HORA]).reset_index(drop=True)
+    transactions = aplicar_tipos_bce(transactions)
+    transactions: DataFrame = fecha_hora(transactions)
+    return transactions
+
+
+def aplicar_tipos_bce(transactions: DataFrame) -> DataFrame:
     tipos_bce: DataFrame = obtener_tipos_usdeur()
-    tipos_bce = tipos_bce.dropna(subset=[FECHA]).sort_values(by=FECHA)
-
     mask_usd = transactions[DIVISA] == "USD"
     if mask_usd.any():
         fx = (
@@ -62,5 +87,4 @@ def leer_transactions(ruta: Path) -> DataFrame:
 
         transactions.loc[mask_usd, TIPO] = fx[TIPO].to_numpy()
 
-    transactions: DataFrame = fecha_hora(transactions)
     return transactions
