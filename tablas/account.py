@@ -5,6 +5,7 @@ from pandas import DataFrame
 
 from constantes import (
     FECHA,
+    HORA,
     ORDEN_ACCOUNT,
     ORDEN_ACCOUNT_CSV,
     SALDO,
@@ -12,7 +13,7 @@ from constantes import (
     USECOLS_ACCOUNT_CSV,
     VARIACION,
 )
-from tablas.funciones import fecha_hora, punto_x_coma
+from tablas.funciones import fecha, fecha_hora, punto_x_coma
 
 
 def leer_account(ruta: Path) -> DataFrame:
@@ -23,13 +24,14 @@ def leer_account(ruta: Path) -> DataFrame:
         names=ORDEN_ACCOUNT_CSV,
         usecols=USECOLS_ACCOUNT_CSV,
         converters={
+            FECHA: fecha,
             TIPO: punto_x_coma,
             VARIACION: punto_x_coma,
             SALDO: punto_x_coma,
         },
     )[ORDEN_ACCOUNT]
 
-    account: DataFrame = account.dropna(subset=[FECHA]).reset_index(drop=True)
+    account: DataFrame = account.dropna(subset=[HORA]).reset_index(drop=True)
     account: DataFrame = fecha_hora(account)
 
     return account

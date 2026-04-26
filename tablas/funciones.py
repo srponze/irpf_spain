@@ -10,12 +10,16 @@ def decimal(serie: Series) -> Series:
     return serie.apply(lambda x: Decimal(x) if x != "" else Decimal(0))
 
 
+def fecha(valor: str) -> str:
+    return "-".join(reversed(valor.split("-")))
+
+
 def fecha_hora(df: DataFrame) -> DataFrame:
     return pd.concat(
         [
             pd.to_datetime(
                 df[FECHA] + " " + df[HORA],
-                format="%d-%m-%Y %H:%M",
+                format="%Y-%m-%d %H:%M",
             ).rename(FECHA_HORA),
             df.iloc[:, 2:],
         ],
