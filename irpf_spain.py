@@ -121,7 +121,7 @@ def main(args: argparse.Namespace) -> None:  # noqa: C901, PLR0912, PLR0915
         if args.tabla in "activos":
             rentaweb.introducir_activos(fifo_activos.sort_values(by="producto"))
         elif args.tabla in "divisas":
-            pass
+            rentaweb.introducir_divisas(fifo_divisas)
 
 
 def filtro_anno(
@@ -212,7 +212,13 @@ parser.add_argument(
 )
 parser.add_argument(
     "--bce",
-    help="Aplica los tipos de cambio a final del dia del BCE a las transacciones en USD (asegurate de descargar el archivo xml y renombrar a 'tipos_bce.xml' en la raiz del proyecto de aqui https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/usd.xml)",
+    help=(
+        "Aplica los tipos de cambio a final del dia del BCE a las transacciones en USD "
+        "(asegurate de descargar el archivo xml y renombrar a 'tipos_bce.xml' "
+        "en la raiz del proyecto de aqui "
+        "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/"
+        "euro_reference_exchange_rates/html/usd.xml)"
+    ),
     action="store_true",
 )
 args: argparse.Namespace = parser.parse_args()

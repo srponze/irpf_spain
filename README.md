@@ -1,7 +1,6 @@
 # Calculadora de Ganancias Patrimoniales en el Irpf Español
 
-Esta herramienta simplifica la declaración de la renta para inversores. Automatiza el cálculo de las ganancias y pérdidas patrimoniales derivadas de la compra y venta de acciones cotizadas y ETF. Permite introducir las operaciones en rentaWeb automaticamente usando playwright (Pendiente)
-Tambien señala las operaciones que inclumplan la regla antiaplicación (regla de los dos meses) (Pendiente)
+Esta herramienta simplifica la declaración de la renta para inversores. Automatiza el cálculo de las ganancias y pérdidas patrimoniales derivadas de la compra y venta de acciones cotizadas y ETF. Permite introducir las operaciones en rentaWeb automaticamente usando playwright y tambien señala las operaciones que inclumplan la regla antiaplicación (regla de los dos meses) (Pendiente)
 
 
 
@@ -18,27 +17,26 @@ Tambien señala las operaciones que inclumplan la regla antiaplicación (regla d
 
 ## Instalación
 1. Clona este repositorio o descarga el archivo Zip y descomprímelo:
-   ```bash
-   git clone https://github.com/srponze/irpf_spain.git
-   ```
+```bash
+git clone https://github.com/srponze/irpf_spain.git
+```
 
 
 ## Uso
-1. Obtén los informes de "Estado de cuenta" y "Transacciones" de tu cuenta de Degiro en formato csv.
-   Puedes incluir el rango de fechas que quieras, pero como mínimo que incluya todas las compra-ventas en las que la venta se haya realizado en el año que quieras calcular.
+1. Obtén los informes de "Estado de cuenta" y "Transacciones" de tu cuenta de Degiro en formato csv. Puedes incluir el rango de fechas que quieras, pero como mínimo que incluya todas las compra-ventas en las que la venta se haya realizado en el año que quieras calcular.
 
    Ej: Si en 2025 has vendido varias acciones compradas en 2024, aumenta el rango inicial como mínimo hasta el momento de dicha compra, no te preocupes por el resto de acciones que no se hayan vendido en 2025 que incluyas, no se tendrán en cuenta
 
-2. Mueve los archivos Account.csv y Transactions.csv a la raiz del proyecto, tambien si quieres aplicar los tipos de cambio a final del dia del BCE mueve el xml al la    raiz del proyecto y renombralo como tipos_bce.xml
+2. Mueve los archivos Account.csv y Transactions.csv a la raiz del proyecto, tambien si quieres aplicar los tipos de cambio a final del dia del BCE mueve el xml a la    raiz del proyecto y renombralo como tipos_bce.xml
 
 3. Ejecuta el script irpf_spain.py:
-   ```bash
-   python irpf_spain.py
-   ```
+```bash
+python irpf_spain.py
+```
 
 
 ## Opciones
-```
+```bash
 usage: irpf_spain.py [-h] [-A ACCOUNT] [-T TRANSACTIONS] [-t TABLA] [-a] [-y YEAR] [-m MONTH] [-d DIVISA] [-p PRODUCTO] [-r] [--all] [--bce]
 
 options:
@@ -60,6 +58,25 @@ options:
                         del proyecto de aqui https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/usd.xml) (default: False)
 ```
 
+
+## Preparación para poder introducir los resultados en rentaweb
+1. En primer lugar hay que instalar el paquete playwright
+```bash
+pip install plawright
+```
+
+2. Tienes dos opciones, instalar una navegador mediante playwright, puedes hacerlo con
+```bash
+playwright install [navegador]
+```
+playwright recomienda usar basados en chronium, chrome o microsoft edge
+
+o tambien puedes utilizar un navegador que tengas ya instalado y debes de sustituir el navegador en el propio código, estan en el archivo renta_web.py
+```python
+self.browser = self.p.chromium.launch(channel="[navegador]", headless=False)
+```
+
+3. Por ultimo debes de configurar tu certificado digital en el navegador a usar para poder entrar en tu rentaWeb. La aplicacion, dentro del proceso, te dará unos segundos para poder aceptar el usar el certificado digital para acceder a tu rentaWeb, deberías de haberte metido anteriormente en tu renta web y haber guardado al menos una vez la sesion, para poder efectuar bien el proceso.
 
 ## Licencia
 Este proyecto está licenciado bajo la Licencia MIT.

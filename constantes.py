@@ -49,7 +49,7 @@ ORDEN_OPERACIONES: list[str] = [
     COMISIONES_TRANSMISION := "comisiones_tr",
     TOTAL_ADQUISICION := "total_ad",
     TOTAL_TRANSMISION := "total_tr",
-    GANANCIA_PERDIDA := "ganancia/perdida",
+    GANANCIA_PERDIDA := "ganancia_perdida",
     REGLA_2MESES := "regla_2meses",
 ]
 

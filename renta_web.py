@@ -39,8 +39,8 @@ class RentaWeb:
 
         ######## Ir al apartado de acciones ########
         page.get_by_role("button", name="Apartados declaración").click()
-        if page.get_by_text("Ganancias y pérdidas").is_hidden():
-            page.get_by_text("Ganancias y pérdidas").click()
+        page.wait_for_timeout(self.tiempo_espera)
+        page.get_by_text("Ganancias y pérdidas").click()
         page.get_by_text("Acciones cotizadas").click()
 
         anterior_producto: str = ""
@@ -81,94 +81,80 @@ class RentaWeb:
 
         self.esperar()
 
-    # def introducir_divisas(
-    #     self,
-    #     divisas: DataFrame,
-    # ) -> None:
-    #     page: Page = self.page
+    def introducir_divisas(
+        self,
+        fifo_divisas: DataFrame,
+    ) -> None:
+        page: Page = self.page
 
-    #     ######## Ir al apartado de divisas ########
-    #     page.wait_for_timeout(TIEMPOESPERA)
-    #     page.get_by_role("button", name="Apartados declaración").click()
-    #     if page.get_by_text(
-    #         "Ganancias y pérdidas patrimoniales (Ventas de bienes, subvenciones, premios, etc)",
-    #     ).is_hidden():
-    #         page.get_by_text(
-    #             "Ganancias y pérdidas patrimoniales (Ventas de bienes, subvenciones, premios, etc)",
-    #         ).click()
-    #     page.get_by_text("Acciones no cotizadas").click()
+        #     ######## Ir al apartado de divisas ########
+        page.get_by_role("button", name="Apartados declaración").click()
+        page.wait_for_timeout(self.tiempo_espera)
+        page.get_by_text("Ganancias y pérdidas").click()
+        page.get_by_text("Acciones no cotizadas").click()
 
-    #     altaNuevaTransaccion = False
+        for row in fifo_divisas.itertuples():
+            if page.get_by_role(
+                "button",
+                name="Alta Elemento Patrimonial",
+            ).is_visible():
+                page.get_by_role("button", name="Alta Elemento Patrimonial").click()
+                page.wait_for_timeout(self.tiempo_espera)
 
-    #     for divisa in transaccionesDivisas:
-    #         for transaccion in transaccionesDivisas[divisa]:
-    #             if altaNuevaTransaccion != False:
-    #                 page.wait_for_timeout(TIEMPOESPERA)
-    #                 page.get_by_role("button", name="Alta Elemento Patrimonial").click()
+            page.locator(".botonLanzaVentana").nth(0).click()
+            page.wait_for_timeout(self.tiempo_espera)
 
-    #             ####### Otros elementos patrimoniales #######
-    #             page.wait_for_timeout(TIEMPOESPERA)
-    #             page.locator(".botonLanzaVentana").nth(0).click()
-    #             page.get_by_title(
-    #                 "Otros elementos patrimoniales (bienes o derechos)",
-    #             ).click()
-    #             page.get_by_role("button", name="Aceptar").click()
+            page.get_by_title(
+                "Otros elementos patrimoniales (bienes o derechos)",
+            ).click()
+            page.get_by_role("button", name="Aceptar").click()
+            page.wait_for_timeout(self.tiempo_espera)
 
-    #             page.locator(".botonLanzaVentana").nth(1).click()
+            page.locator(".botonLanzaVentana").nth(1).click()
+            page.wait_for_timeout(self.tiempo_espera)
 
-    #             page.get_by_title(
-    #                 "Transmisión intervivos onerosa (venta, permuta, etc):",
-    #             ).get_by_label("").check()
+            page.get_by_title(
+                "Transmisión intervivos onerosa (venta, permuta, etc):",
+            ).get_by_label("").check()
+            page.wait_for_timeout(self.tiempo_espera)
 
-    #             ####### Fecha de adquisición #######
-    #             page.wait_for_timeout(TIEMPOESPERA)
-    #             fechaAdquisicion = transaccion.adquisicion.fecha.strftime(
-    #                 "%d/%m" + "/2024",
-    #             )  # Para el simulador del 2024
-    #             page.get_by_role("combobox", name="Fecha de adquisición:").get_by_role(
-    #                 "textbox",
-    #             ).fill(fechaAdquisicion)
+            page.get_by_role("combobox", name="Fecha de transmisión").get_by_role(
+                "textbox",
+            ).fill(row.fecha_hora_tr.strftime("%d/%m/%Y"))
+            page.wait_for_timeout(self.tiempo_espera)
 
-    #             ####### Fecha de transmisión #######
-    #             page.wait_for_timeout(TIEMPOESPERA)
-    #             fechaTransmision = transaccion.transmision.fecha.strftime(
-    #                 "%d/%m" + "/2024",
-    #             )  # Para el simulador del 2024
-    #             page.get_by_role("combobox", name="Fecha de transmisión:").get_by_role(
-    #                 "textbox",
-    #             ).fill(fechaTransmision)
+            page.get_by_role("combobox", name="Fecha de adquisición").get_by_role(
+                "textbox",
+            ).fill(row.fecha_hora_ad.strftime("%d/%m/%Y"))
+            page.wait_for_timeout(self.tiempo_espera)
 
-    #             ####### Valor de adquisición #######
-    #             page.wait_for_timeout(TIEMPOESPERA)
-    #             page.get_by_role("dialog").get_by_role(
-    #                 "textbox",
-    #                 name="Valor de adquisición:",
-    #             ).dblclick()
-    #             valorAdquisicion = str(abs(transaccion.adquisicion.total))
-    #             page.get_by_role(
-    #                 "textbox",
-    #                 name="Importe de la adquisición",
-    #             ).press_sequentially(valorAdquisicion)
-    #             # page.get_by_role("textbox", name="Gastos de la adquisición")
-    #             page.get_by_role("button", name="Aceptar").nth(1).click()
+            page.get_by_role("dialog").get_by_role(
+                "textbox",
+                name="Valor de transmisión",
+            ).dblclick()
+            page.wait_for_timeout(self.tiempo_espera)
 
-    #             ####### Valor de transmisión #######
-    #             page.wait_for_timeout(TIEMPOESPERA)
-    #             page.get_by_role("dialog").get_by_role(
-    #                 "textbox",
-    #                 name="Valor de transmisión:",
-    #             ).dblclick()
-    #             valorTransmision = str(abs(transaccion.transmision.total))
-    #             page.get_by_role(
-    #                 "textbox",
-    #                 name="Importe de la transmisión",
-    #             ).press_sequentially(valorTransmision)
-    #             # page.get_by_role("textbox", name="Gastos de la transmisión")
-    #             page.get_by_role("button", name="Aceptar").nth(1).click()
+            page.get_by_role(
+                "textbox",
+                name="Importe de la transmisión",
+            ).press_sequentially(str(abs(row.total_tr)))
+            page.get_by_role("button", name="Aceptar").nth(1).click()
 
-    #             page.get_by_role("button", name="Aceptar").nth(0).click()
+            page.get_by_role("dialog").get_by_role(
+                "textbox",
+                name="Valor de adquisición",
+            ).dblclick()
+            page.wait_for_timeout(self.tiempo_espera)
 
-    #             altaNuevaTransaccion = True
+            page.get_by_role(
+                "textbox",
+                name="Importe de la adquisición",
+            ).press_sequentially(str(abs(row.total_ad)))
+            page.get_by_role("button", name="Aceptar").nth(1).click()
+
+            page.get_by_role("button", name="Aceptar").nth(0).click()
+
+        self.esperar()
 
     def esperar(self) -> None:
         self.page.wait_for_timeout(10000000)
